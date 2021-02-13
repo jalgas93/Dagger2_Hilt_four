@@ -1,7 +1,7 @@
 package com.example.dagger2fourproject.repository
 
 import android.util.Log
-import com.example.dagger2fourproject.domain.data.DataState
+
 import com.example.dagger2fourproject.domain.model.Model
 import com.example.dagger2fourproject.network.NetworkService
 import com.example.dagger2fourproject.network.model.RetrofitMapper
@@ -15,22 +15,35 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class Repository @Inject constructor(
-    private val networkService: NetworkService,
-    private val retrofitMapper: RetrofitMapper
-) {
-    suspend fun RecipeRepos(token:String,recipe:Int) = networkService.getRecipe(token,recipe)
-
-}
+interface Repository{
+//    suspend fun RecipeRepos(token:String,recipe:Int) = networkService.getRecipe(token,recipe)
+//
+//}
 
 
-//    fun get():Flow<List<Model>> = flow {
-//        networkService.getRecipe().map {
-//          retrofitMapper.mapToDomainModel(it)
+
+
+
+    fun getRecipe(
+        token : String, recipeId: Int
+    ) : Flow<RetrofitModel>
+
+//    fun getRecipe(token:String,recipe:Int):Flow<RetrofitModel>{
+//        return flow {
+//           val a =  networkService.getRecipe(token,recipe)
+//            emit(a)
+//        }.flowOn(Dispatchers.IO)
+//
+//    }
+
+//
+//   fun get(token:String,recipe:Int): Flow<List<Model>> = flow {
+//        networkService.getRecipe(token,recipe).map{
+//               retrofitMapper.mapToDomainModel(it)
 //        }
 //    }
 
-
+}
 
 //    fun a():Flow<List<Model>>{
 //        return flow {

@@ -7,14 +7,30 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
 object NetworkModule {
+
+    @Provides
+    @Singleton
+    fun providesOkHttpClient() : OkHttpClient {
+
+        val logger = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+        return OkHttpClient.Builder()
+            .addInterceptor(logger)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(true)
+            .build()
+
+    }
 
     @Singleton
     @Provides
@@ -27,6 +43,7 @@ object NetworkModule {
     fun provideNetworkService(): NetworkService {
         return Retrofit.Builder()
             .baseUrl("https://food2fork.ca/api/recipe/")
+            .client(providesOkHttpClient())
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build()
             .create(NetworkService::class.java)

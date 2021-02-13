@@ -8,15 +8,15 @@ import retrofit2.http.Query
 
 interface NetworkService {
 
-    @GET("get")
-     suspend fun getRecipe(
-        @Header("Authorization") token: String,
-        @Query("id") id: Int
-    ): RetrofitModel
-//
 //    @GET("get")
-//    suspend fun getRecipe(
+//     suspend fun getRecipe(
 //        @Header("Authorization") token: String,
 //        @Query("id") id: Int
-//    ): List<RetrofitModel>
+//    ): RetrofitModel
+//
+    @GET("get")
+    suspend fun getRecipe(
+        @Header("Authorization") token: String,
+        @Query("id") id: Int
+    ):RetrofitModel
 }

@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.dagger2fourproject.R
+import com.example.dagger2fourproject.domain.data.DataState
+import com.example.dagger2fourproject.domain.data.Status
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,8 +36,28 @@ class RecipeFragment : Fragment() {
     }
 
      fun showViewModel() {
-        viewModel.live.observe(requireActivity(), Observer {
-            Log.i("jalgas2",it.toString())
+        viewModel.live.observe(requireActivity(), Observer {datastate->
+
+            Log.i("jalgas6",datastate.toString())
+            when(datastate.status){
+                Status.SUCCESS->{
+                datastate._data?.let {
+                    Log.i("jalgas5",it.toString())
+                }
+                }
+                Status.LOADING -> {
+
+                }
+                Status.ERROR -> {
+                    datastate.message?.let {
+                        //context?.showToast(it)
+                    }
+                  //  binding.progressBar.gone()
+                }
+
+            }
+
+
         })
     }
 
