@@ -1,6 +1,10 @@
 package com.example.dagger2fourproject.repository
 
 import android.util.Log
+import com.example.dagger2fourproject.cache.RoomServiceDao
+import com.example.dagger2fourproject.cache.model.RoomModel
+import com.example.dagger2fourproject.cache.roomMapper.RoomMapper
+import com.example.dagger2fourproject.domain.data.DataState
 
 import com.example.dagger2fourproject.domain.model.Model
 import com.example.dagger2fourproject.network.NetworkService
@@ -15,18 +19,70 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-interface Repository{
+class Repository @Inject constructor(
+    var networkService: NetworkService,
+    var retrofitMapper: RetrofitMapper,
+    var roomServiceDao: RoomServiceDao,
+    var roomMapper: RoomMapper
+
+) {
 //    suspend fun RecipeRepos(token:String,recipe:Int) = networkService.getRecipe(token,recipe)
 //
 //}
 
 
-
-
-
     fun getRecipe(
-        token : String, recipeId: Int
-    ) : Flow<RetrofitModel>
+        token: String,
+        recipeId: Int
+    ): Flow<DataState<Model>> {
+        return return flow {
+
+            try {
+                emit(DataState.Loading(true))
+                delay(1000)
+
+                var recipe = getRecipeFromCache(recipeId)
+
+                if (recipe != null) {
+                    emit(DataState.Success(recipe))
+                } else {
+
+                    roomServiceDao.insertRecipe(
+                        roomMapper.mapFromDomainModel(
+                            getRecipeFromNetwork(token, recipeId)
+                        )
+                    )
+                    recipe = getRecipeFromCache(recipeId)
+
+                    if (recipe != null) {
+                        emit(DataState.Success(recipe))
+                    } else {
+
+                    }
+
+                }
+            } catch (e: Exception) {
+                emit(DataState.Error(e.message ?: "klfjdjg"))
+            }
+            // var networkServise = networkService.getRecipe(token,recipeId)
+
+            //  var b = retrofitMapper.mapToDomainModel(networkServise)
+
+
+        }.flowOn(Dispatchers.IO)
+    }
+
+    private suspend fun getRecipeFromNetwork(token: String, recipeId: Int): Model {
+        return retrofitMapper.mapToDomainModel(networkService.getRecipe(token, recipeId))
+
+    }
+
+    private suspend fun getRecipeFromCache(recipeId: Int): Model {
+        return roomServiceDao.getRecipeById(recipeId)?.let {
+            roomMapper.mapToDomainModel(it)
+        }
+
+    }
 
 //    fun getRecipe(token:String,recipe:Int):Flow<RetrofitModel>{
 //        return flow {

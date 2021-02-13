@@ -22,24 +22,23 @@ class RecipeViewModel @ViewModelInject constructor(
     var repository: Repository,
     var networkService: NetworkService
 ):ViewModel() {
-     private val muLiveData = MutableLiveData<DataState<RetrofitModel>>()
-     val live:LiveData<DataState<RetrofitModel>> = muLiveData
+     private val muLiveData = MutableLiveData<DataState<Model>>()
+     val live:LiveData<DataState<Model>> = muLiveData
 
     fun jalgas(token:String,recipe:Int){
         viewModelScope.launch {
             repository.getRecipe(token, recipe)
                 .onStart {
-                 muLiveData.postValue(DataState.Loading(true))
+                 muLiveData.value = DataState.Loading(true)
                 }
                 .catch {
                     it.message?.let {
-                        muLiveData.postValue(DataState.Error(it))
+                        muLiveData.value = DataState.Error(it)
                     }
 
                 }.collect{
-                    muLiveData.postValue(DataState.Success(it))
-                    Log.i("jalgas7",it.title.toString())
-
+                    muLiveData.value = it
+                Log.i("jalgas7",it.toString())
                 }
 
         }

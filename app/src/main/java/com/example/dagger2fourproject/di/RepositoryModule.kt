@@ -1,27 +1,34 @@
 package com.example.dagger2fourproject.di
 
+import com.example.dagger2fourproject.cache.RoomServiceDao
+import com.example.dagger2fourproject.cache.roomMapper.RoomMapper
 import com.example.dagger2fourproject.network.NetworkService
 import com.example.dagger2fourproject.network.model.RetrofitMapper
-import com.example.dagger2fourproject.network.model.RetrofitModel
-import com.example.dagger2fourproject.repository.ReposImpl
 import com.example.dagger2fourproject.repository.Repository
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import javax.inject.Singleton
-@InstallIn(ApplicationComponent::class)
+
 @Module
+@InstallIn(ApplicationComponent::class)
 
-abstract class RepositoryModule {
+ object RepositoryModule {
 
 
-    @Binds
-   abstract fun providesRepository(
-
-reposImpl: ReposImpl
-    ):Repository
+    //@Binds
+    @Singleton
+    @Provides
+    fun providesRepository(
+retrofitMapper: RetrofitMapper,
+        networkService: NetworkService,
+        roomServiceDao: RoomServiceDao,
+        roomMapper: RoomMapper
+//reposImpl: ReposImpl
+    ):Repository{
+        return Repository(networkService, retrofitMapper,roomServiceDao, roomMapper)
+    }
 
 
 }

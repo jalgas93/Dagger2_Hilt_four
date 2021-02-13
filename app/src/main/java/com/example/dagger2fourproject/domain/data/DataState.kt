@@ -1,6 +1,10 @@
 package com.example.dagger2fourproject.domain.data
 
-sealed class DataState <out T> (val status : Status, val _data : T?, val message: String?) {
+sealed class DataState <out T> (
+    val status : Status,
+    val _data : T?,
+    val message: String?
+    ) {
 
     data class Success<out R>(val data : R) : DataState<R>(
         status = Status.SUCCESS,
