@@ -55,4 +55,15 @@ class RoomMapper : Mapper<RoomModel, Model> {
         }
         return list
     }
+
+     fun mapToDomainModelToList(initial:List<RoomModel>):List<Model> {
+        return initial.map {
+            mapToDomainModel(it) }
+    }
+
+    fun mapFromDomainModel(initial:List<Model>):List<RoomModel>{
+        return initial.map {
+            mapFromDomainModel(it)
+        }
+    }
 }

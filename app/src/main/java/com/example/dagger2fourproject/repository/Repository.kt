@@ -34,8 +34,8 @@ class Repository @Inject constructor(
     fun getRecipe(
         token: String,
         recipeId: Int
-    ): Flow<DataState<Model>> {
-        return return flow {
+    ): Flow<DataState<List<Model>>> {
+         return flow {
 
             try {
                 emit(DataState.Loading(true))
@@ -62,11 +62,8 @@ class Repository @Inject constructor(
 
                 }
             } catch (e: Exception) {
-                emit(DataState.Error(e.message ?: "klfjdjg"))
+                emit(DataState.Error(e.message ?: " ошибка "))
             }
-            // var networkServise = networkService.getRecipe(token,recipeId)
-
-            //  var b = retrofitMapper.mapToDomainModel(networkServise)
 
 
         }.flowOn(Dispatchers.IO)
@@ -77,9 +74,9 @@ class Repository @Inject constructor(
 
     }
 
-    private suspend fun getRecipeFromCache(recipeId: Int): Model {
+    private suspend fun getRecipeFromCache(recipeId: Int): List<Model> {
         return roomServiceDao.getRecipeById(recipeId)?.let {
-            roomMapper.mapToDomainModel(it)
+            roomMapper.mapToDomainModelToList(it)
         }
 
     }

@@ -4,6 +4,7 @@ import android.graphics.ColorSpace
 import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import com.example.dagger2fourproject.cache.RoomServiceDao
 import com.example.dagger2fourproject.domain.data.DataState
 import com.example.dagger2fourproject.domain.model.Model
 import com.example.dagger2fourproject.network.NetworkService
@@ -20,10 +21,25 @@ import kotlinx.coroutines.launch
 class RecipeViewModel @ViewModelInject constructor(
 
     var repository: Repository,
+    var roomServiceDao: RoomServiceDao,
     var networkService: NetworkService
 ):ViewModel() {
-     private val muLiveData = MutableLiveData<DataState<Model>>()
-     val live:LiveData<DataState<Model>> = muLiveData
+
+    var jalgas = roomServiceDao.getRecipeByIdLiveData(9)
+//    private val roomMutableLiveData = MutableLiveData<List<Model>>()
+//    val liveData:LiveData<List<Model>> = roomMutableLiveData
+//         fun jalgas(recipe: Int){
+//             viewModelScope.launch {
+//                 var jalgas = roomServiceDao.getRecipeByIdLiveData(recipe)
+//                 liveData.value = jalgas
+//
+//
+//             }
+//         }
+     private val muLiveData = MutableLiveData<DataState<List<Model>>>()
+     val live:LiveData<DataState<List<Model>>>  = muLiveData
+
+    //var list:MutableLiveData<Model> = MutableLiveData()
 
     fun jalgas(token:String,recipe:Int){
         viewModelScope.launch {
@@ -45,6 +61,27 @@ class RecipeViewModel @ViewModelInject constructor(
 
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //     fun jalgas (token:String,recipeId:Int){
